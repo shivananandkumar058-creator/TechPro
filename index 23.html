@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeachPro - Advanced Teaching Platform</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --danger: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .app-header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .main-nav li {
+            margin: 0 1rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background-color: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn.warning {
+            background-color: var(--warning);
+        }
+
+        .btn.danger {
+            background-color: var(--danger);
+        }
+
+        .btn.success {
+            background-color: var(--success);
+        }
+
+        /* Main App Container */
+        .app-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .app-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .app-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            background-color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn span {
+            font-size: 2rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Whiteboard Styles */
+        #drawingCanvas {
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 8px;
+            width: 100%;
+            height: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            cursor: crosshair;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .toolbar input[type="range"] {
+            width: 100px;
+        }
+
+        /* Classroom Styles */
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .video-box {
+            background-color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+
+        .video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-top-right-radius: 8px;
+        }
+
+        .chat-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            height: 300px;
+            padding: 1rem;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            border-right: none;
+        }
+
+        .chat-input button {
+            border-radius: 0 5px 5px 0;
+        }
+
+        /* Courses Styles */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-image {
+            height: 150px;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .course-content p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background-color: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .auth-tab.active {
+            background-color: white;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .auth-form {
+            padding: 2rem;
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form input,
+        .auth-form select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .auth-form button {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .main-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-nav li {
+                margin: 0.5rem;
+            }
+
+            .video-container {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .toolbar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">TeachPro</div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#" class="nav-link active" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-section="whiteboard">Whiteboard</a></li>
+                <li><a href="#" class="nav-link" data-section="classroom">Classroom</a></li>
+                <li><a href="#" class="nav-link" data-section="courses">Courses</a></li>
+            </ul>
+        </nav>
+        <div class="user-controls">
+            <button id="loginBtn" class="btn">Login</button>
+            <button id="signupBtn" class="btn secondary">Sign Up</button>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="app-section active">
+            <h1>Welcome to TeachPro</h1>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Active Courses</h3>
+                    <p class="stat-value">12</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Students Enrolled</h3>
+                    <p class="stat-value">245</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Upcoming Classes</h3>
+                    <p class="stat-value">5</p>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="action-btn" data-section="whiteboard">
+                    <span>🎨</span> Start Whiteboard
+                </button>
+                <button class="action-btn" data-section="classroom">
+                    <span>🎥</span> Start Classroom
+                </button>
+                <button class="action-btn" data-section="courses">
+                    <span>📚</span> Manage Courses
+                </button>
+            </div>
+        </section>
+
+        <!-- Whiteboard Section -->
+        <section id="whiteboard" class="app-section">
+            <div class="section-header">
+                <h1>Interactive Whiteboard</h1>
+                <div class="toolbar">
+                    <input type="color" id="colorPicker" value="#000000">
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                    <button id="clearBoard" class="btn warning">Clear</button>
+                    <button id="saveBoard" class="btn">Save</button>
+                </div>
+            </div>
+            <canvas id="drawingCanvas"></canvas>
+        </section>
+
+        <!-- Virtual Classroom Section -->
+        <section id="classroom" class="app-section">
+            <div class="section-header">
+                <h1>Virtual Classroom</h1>
+                <div class="toolbar">
+                    <button id="startClass" class="btn">Start Class</button>
+                    <button id="stopClass" class="btn warning" disabled>End Class</button>
+                    <button id="shareScreen" class="btn" disabled>Share Screen</button>
+                </div>
+            </div>
+            <div class="video-container">
+                <div class="video-box local">
+                    <video id="localVideo" autoplay muted></video>
+                    <div class="video-label">You</div>
+                </div>
+                <div class="video-box remote">
+                    <video id="remoteVideo" autoplay></video>
+                    <div class="video-label">Participant</div>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages"></div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type your message...">
+                    <button class="btn">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Course Management Section -->
+        <section id="courses" class="app-section">
+            <div class="section-header">
+                <h1>Course Management</h1>
+                <div class="toolbar">
+                    <input type="text" id="courseSearch" placeholder="Search courses...">
+                    <button id="addCourse" class="btn">Add Course</button>
+                </div>
+            </div>
+            <div class="courses-grid">
+                <!-- Courses will be added dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Login/Signup Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <form id="signupForm" class="auth-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <select required>
+                    <option value="">Select Role</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                </select>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Main Application Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation between sections
+            const navLinks = document.querySelectorAll('.nav-link');
+            const actionButtons = document.querySelectorAll('.action-btn');
+            const sections = document.querySelectorAll('.app-section');
+            
+            function switchSection(sectionId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === sectionId) {
+                        section.classList.add('active');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchSection(this.dataset.section);
+                });
+            });
+            
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    switchSection(this.dataset.section);
+                });
+            });
+            
+            // Auth Modal Logic
+            const authModal = document.getElementById('authModal');
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const closeModal = document.querySelector('.close-modal');
+            const authTabs = document.querySelectorAll('.auth-tab');
+            const authForms = document.querySelectorAll('.auth-form');
+            
+            function openAuthModal() {
+                authModal.style.display = 'flex';
+            }
+            
+            function closeAuthModal() {
+                authModal.style.display = 'none';
+            }
+            
+            loginBtn.addEventListener('click', openAuthModal);
+            signupBtn.addEventListener('click', openAuthModal);
+            closeModal.addEventListener('click', closeAuthModal);
+            
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    authForms.forEach(f => f.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}Form`).classList.add('active');
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === authModal) {
+                    closeAuthModal();
+                }
+            });
+            
+            // Login/Signup form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Login functionality would connect to backend in real implementation');
+                closeAuthModal();
+            });
+            
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Signup functionality would connect to backend in real implementation');
+                closeAuthModal();
+            });
+            
+            // Initialize Whiteboard
+            const canvas = document.getElementById('drawingCanvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            
+            // Set canvas size
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.offsetWidth;
+                canvas.height = 600; // Fixed height
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            // Drawing functionality
+            function startDrawing(e) {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+            
+            function stopDrawing() {
+                isDrawing = false;
+            }
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch support for mobile
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            canvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+            
+            // Whiteboard tools
+            const colorPicker = document.getElementById('colorPicker');
+            const brushSize = document.getElementById('brushSize');
+            const clearBoard = document.getElementById('clearBoard');
+            const saveBoard = document.getElementById('saveBoard');
+            
+            colorPicker.addEventListener('input', function() {
+                ctx.strokeStyle = this.value;
+            });
+            
+            brushSize.addEventListener('input', function() {
+                ctx.lineWidth = this.value;
+            });
+            
+            clearBoard.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear the whiteboard?')) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+            
+            saveBoard.addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.download = 'whiteboard.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+            
+            // Set initial drawing styles
+            ctx.strokeStyle = colorPicker.value;
+            ctx.lineWidth = brushSize.value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Virtual Classroom
+            const startClassBtn = document.getElementById('startClass');
+            const stopClassBtn = document.getElementById('stopClass');
+            const shareScreenBtn = document.getElementById('shareScreen');
+            const localVideo = document.getElementById('localVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+            let localStream;
+            
+            startClassBtn.addEventListener('click', async function() {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true
+                    });
+                    localVideo.srcObject = localStream;
+                    
+                    // In a real app, you would connect to other peers here
+                    // For demo, we'll just clone the stream
+                    remoteVideo.srcObject = localStream.clone();
+                    
+                    startClassBtn.disabled = true;
+                    stopClassBtn.disabled = false;
+                    shareScreenBtn.disabled = false;
+                    
+                    alert('In a real implementation, this would connect to other participants using WebRTC');
+                } catch (err) {
+                    console.error('Error accessing media devices:', err);
+                    alert('Could not access camera/microphone');
+                }
+            });
+            
+            stopClassBtn.addEventListener('click', function() {
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localVideo.srcObject = null;
+                }
+                
+                if (remoteVideo.srcObject) {
+                    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+                    remoteVideo.srcObject = null;
+                }
+                
+                startClassBtn.disabled = false;
+                stopClassBtn.disabled = true;
+                shareScreenBtn.disabled = true;
+            });
+            
+            shareScreenBtn.addEventListener('click', async function() {
+                try {
+                    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true
+                    });
+                    
+                    // Replace local video with screen share
+                    localVideo.srcObject = screenStream;
+                    
+                    // Handle when screen sharing is stopped
+                    screenStream.getVideoTracks()[0].onended = function() {
+                        localVideo.srcObject = localStream;
+                    };
+                    
+                    alert('In a real implementation, this would share your screen with other participants');
+                } catch (err) {
+                    console.error('Error sharing screen:', err);
+                }
+            });
+            
+            // Chat functionality
+            const chatInput = document.querySelector('.chat-input input');
+            const chatSendBtn = document.querySelector('.chat-input button');
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            chatSendBtn.addEventListener('click', function() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    addMessage('You', message, true);
+                    chatInput.value = '';
+                    
+                    // In a real app, this would send to other participants
+                    setTimeout(() => {
+                        addMessage('Participant', 'This is a demo response', false);
+                    }, 1000);
+                }
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    chatSendBtn.click();
+                }
+            });
+            
+            function addMessage(sender, text, isMe) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.innerHTML = `
+                    <strong>${sender}:</strong> ${text}
+                `;
+                if (isMe) {
+                    messageDiv.style.textAlign = 'right';
+                    messageDiv.style.color = 'var(--primary)';
+                }
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Course Management
+            const courseSearch = document.getElementById('courseSearch');
+            const addCourseBtn = document.getElementById('addCourse');
+            const coursesGrid = document.querySelector('.courses-grid');
+            
+            // Sample courses data
+            const courses = [
+                {
+                    id: 1,
+                    title: 'Mathematics 101',
+                    description: 'Basic algebra and geometry concepts for beginners',
+                    lessons: 12,
+                    students: 45,
+                    color: '#4361ee'
+                },
+                {
+                    id: 2,
+                    title: 'Science Fundamentals',
+                    description: 'Introduction to physics, chemistry and biology',
+                    lessons: 8,
+                    students: 32,
+                    color: '#4895ef'
+                },
+                {
+                    id: 3,
+                    title: 'English Literature',
+                    description: 'Classic and modern English literature analysis',
+                    lessons: 10,
+                    students: 28,
+                    color: '#4cc9f0'
+                },
+                {
+                    id: 4,
+                    title: 'History of India',
+                    description: 'Ancient to modern Indian history',
+                    lessons: 15,
+                    students: 50,
+                    color: '#3f37c9'
+                },
+                {
+                    id: 5,
+                    title: 'Computer Science',
+                    description: 'Programming basics with Python',
+                    lessons: 20,
+                    students: 65,
+                    color: '#f72585'
+                },
+                {
+                    id: 6,
+                    title: 'Art and Design',
+                    description: 'Fundamentals of drawing and painting',
+                    lessons: 6,
+                    students: 18,
+                    color: '#f8961e'
+                }
+            ];
+            
+            // Render courses
+            function renderCourses(filter = '') {
+                coursesGrid.innerHTML = '';
+                
+                const filteredCourses = courses.filter(course => 
+                    course.title.toLowerCase().includes(filter.toLowerCase()) || 
+                    course.description.toLowerCase().includes(filter.toLowerCase())
+                );
+                
+                filteredCourses.forEach(course => {
+                    const courseCard = document.createElement('div');
+                    courseCard.classList.add('course-card');
+                    courseCard.innerHTML = `
+                        <div class="course-image" style="background-color: ${course.color}">
+                            ${course.title.charAt(0)}
+                        </div>
+                        <div class="course-content">
+                            <h3>${course.title}</h3>
+                            <p>${course.description}</p>
+                            <div class="course-meta">
+                                <span>${course.lessons} Lessons</span>
+                                <span>${course.students} Students</span>
+                            </div>
+                        </div>
+                    `;
+                    coursesGrid.appendChild(courseCard);
+                });
+            }
+            
+            // Search courses
+            courseSearch.addEventListener('input', function() {
+                renderCourses(this.value);
+            });
+            
+            // Add new course
+            addCourseBtn.addEventListener('click', function() {
+                const title = prompt('Enter course title:');
+                if (title) {
+                    const newCourse = {
+                        id: courses.length + 1,
+                        title,
+                        description: 'New course description',
+                        lessons: 0,
+                        students: 0,
+                        color: '#' + Math.floor(Math.random()*16777215).toString(16)
+                    };
+                    courses.push(newCourse);
+                    renderCourses();
+                }
+            });
+            
+            // Initial render
+            renderCourses();
+        });
+    </script>
+</body>
+</html>
